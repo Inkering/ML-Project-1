@@ -12,6 +12,11 @@ https://github.com/ayu34/Neural-Style-Transfer/blob/master/Neural%20Style%20Tran
 The actual research paper on VGG
 https://arxiv.org/abs/1409.1556
 
-Somehow I am not totally understanding how these loss functions are working and
-how by running the net you end up with some sort of transformation that just
-works.
+This paper goes into depth as to how it works and has good conceptual and detailed explanations of loss.
+https://towardsdatascience.com/light-on-math-machine-learning-intuitive-guide-to-neural-style-transfer-ef88e46697ee
+
+
+Basically, the content loss function is calculating the sum of the mean squared error between the generated image and the content image. The activations in the higher layers of the generated image often represent objects shown in the image. So the content loss function focuses on the higher layers correlated specifically to objects or content.
+
+
+On the other hand, the style loss function looks at all of the layers in the CNN. style information is measured as the amount of correlation present between features maps in a given layer. Next, a loss is defined as the difference of correlation present between the feature maps computed by the generated image and the style image.
