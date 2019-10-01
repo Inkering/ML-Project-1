@@ -12,6 +12,9 @@ https://github.com/ayu34/Neural-Style-Transfer/blob/master/Neural%20Style%20Tran
 The actual research paper on VGG
 https://arxiv.org/abs/1409.1556
 
+A paper discussing the use of VGG for style-transfer applications
+https://arxiv.org/pdf/1508.06576.pdf
+
 Somehow I am not totally understanding how these loss functions are working and
 how by running the net you end up with some sort of transformation that just
 works.
