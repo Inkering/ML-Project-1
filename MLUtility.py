@@ -6,6 +6,7 @@
 # and analysis of style transfer using neural networks
 
 import tensorflow as tf
+import tensorflow_probability as tfp
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -63,9 +64,29 @@ def vgg_2_functional_model(layer_names):
 
 
 def gram_matrix(input_tensor):
-    """Finds the correlation matrix for style loss and sums
-       all of the feature correlations for a particular layer"""
+    """
+    Finds the correlation matrix for style loss and sums
+    all of the feature correlations for a particular layer
+    """
     result = tf.linalg.einsum('bijc,bijd->bcd', input_tensor, input_tensor)
+    input_shape = tf.shape(input_tensor)
+
+    # num_locations is the same as number of pixels
+    num_locations = tf.cast(input_shape[1]*input_shape[2], tf.float32)
+
+    # normalize
+    return result/(num_locations)
+
+def covar_matrix(input_tensor):
+    """
+    Finds the covariance matrix for style loss and sums
+    all of the feature correlations for a particular layer
+
+    The difference between this and gram_matrix() is the order
+    of transpose (GG for gram vs G'G for covar). We use this
+    to test which type of correlation matrix is better
+    """
+    result = tfp.stats.covariance(input_tensor)
     input_shape = tf.shape(input_tensor)
 
     # num_locations is the same as number of pixels
@@ -88,9 +109,11 @@ class StyleContentModel(tf.keras.models.Model):
         self.num_style_layers = len(style_layers)
         self.vgg_trainable = False
 
-    def call(self, inputs):
+    def call(self, inputs, gram = True):
         """
         Overloading the keras Model call method
+
+        Input False for gram to use the covariance matrix
         """
         # Expects float input in [0,1]
         inputs = inputs*255.0
@@ -102,8 +125,12 @@ class StyleContentModel(tf.keras.models.Model):
                                           outputs[self.num_style_layers:])
 
         # Puts the style outputs into their correlation matrix form so that we can compute loss
-        style_outputs = [gram_matrix(style_output)
-                         for style_output in style_outputs]
+        if gram is True:
+            style_outputs = [gram_matrix(style_output)
+                             for style_output in style_outputs]
+        else:
+            style_outputs = [covar_matrix(style_output)
+                             for style_output in style_outputs]
 
         content_dict = {content_name:value
                         for content_name, value
