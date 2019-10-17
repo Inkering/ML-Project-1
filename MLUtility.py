@@ -83,7 +83,7 @@ def covar_matrix(input_tensor):
     all of the feature correlations for a particular layer
 
     The difference between this and gram_matrix() is the order
-    of transpose (GG for gram vs G'G for covar). We use this
+    of transpose (GG' for gram vs G'G for covar). We use this
     to test which type of correlation matrix is better
     """
     result = tfp.stats.covariance(input_tensor)
@@ -205,16 +205,13 @@ class experiment_handler():
         self.image.assign(clip_0_1(image))
 
 
-    def run(self, epoch, num_steps):
+    def run(self, epoch):
         self.opt = tf.train.AdamOptimizer(learning_rate=0.05, beta1=0.99, epsilon=1e-1)
         self.image = tf.Variable(self.content_image)
         self.losses = []
-        plt.figure()
-        plt.imshow(tensor_to_image(self.image))
 
         for i in range(epoch):
-            for j in range(num_steps):
-                self.train_step(self.image)
-
+            self.train_step(self.image)
+            if (i % 100) == 0:
                 plt.figure()
                 plt.imshow(tensor_to_image(self.image))

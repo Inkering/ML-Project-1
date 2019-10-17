@@ -19,10 +19,6 @@ Somehow I am not totally understanding how these loss functions are working and
 how by running the net you end up with some sort of transformation that just
 works.
 
-This paper goes into depth as to how it works and has good conceptual and
-detailed explanations of loss.
-https://towardsdatascience.com/light-on-math-machine-learning-intuitive-guide-to-neural-style-transfer-ef88e46697ee
-
 Basically, the content loss function is calculating the sum of the mean squared
 error between the generated image and the content image. The activations in the
 higher layers of the generated image often represent objects shown in the
